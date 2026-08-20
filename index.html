@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>ลงทะเบียนรถยนต์พนักงาน | Seacon Vehicle Register</title>
+
+<meta name="theme-color" content="#0F6B54">
+<meta name="description" content="แบบฟอร์มลงทะเบียนรถยนต์พนักงาน ศูนย์การค้าซีคอนสแควร์">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ลงทะเบียนรถ">
+<meta name="application-name" content="ลงทะเบียนรถพนักงาน">
+<meta name="msapplication-TileColor" content="#0F6B54">
+<link id="lnkFavicon" rel="icon" type="image/svg+xml" href="">
+<link id="lnkAppleIcon" rel="apple-touch-icon" href="">
+<link id="lnkManifest" rel="manifest" href="">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   ธีมแอปฟอร์ม — เขียวมรกต/เทอร์ควอยซ์ + ทรายอ่อน (แยกจากแอปแดชบอร์ดชัดเจน)
+   ============================================================ */
+:root{
+  --c1:#0F6B54; --c2:#12A37E; --c3:#5FD3AE; --accent:#F2A81D; --danger:#D64545;
+  --bg:#EDF6F2; --g1:#F6FBF8; --g2:#DCEFE8; --g3:#FBF1DE;
+  --surface:rgba(255,255,255,.74); --surface-2:rgba(255,255,255,.55);
+  --border:rgba(15,107,84,.16); --border-strong:rgba(15,107,84,.28);
+  --text:#0E2A22; --text-soft:#3F5F55; --text-mute:#719085;
+  --input-bg:rgba(255,255,255,.9); --header-bg:rgba(255,255,255,.7);
+  --shadow:0 10px 30px rgba(15,107,84,.12); --shadow-lg:0 18px 45px rgba(15,107,84,.2);
+  --ring:rgba(18,163,126,.28); --radius:18px;
+}
+html[data-theme="dark"]{
+  --c1:#0A2A22; --c2:#25C79B; --c3:#7CE7C4; --accent:#FFC24A;
+  --bg:#051713; --g1:#0A2A22; --g2:#04120F; --g3:#123028;
+  --surface:rgba(16,48,40,.62); --surface-2:rgba(10,34,28,.55);
+  --border:rgba(255,255,255,.14); --border-strong:rgba(255,255,255,.28);
+  --text:#EEFBF6; --text-soft:#BFE3D7; --text-mute:#87ADA1;
+  --input-bg:rgba(6,26,21,.78); --header-bg:rgba(6,26,21,.74);
+  --shadow:0 10px 30px rgba(0,0,0,.45); --shadow-lg:0 20px 50px rgba(0,0,0,.55);
+  --ring:rgba(37,199,155,.42);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:'Sarabun',-apple-system,'Segoe UI',sans-serif;line-height:1.65;
+  color:var(--text);background:var(--bg);
+  background-image:
+    radial-gradient(1000px 620px at 8% -8%, var(--g3) 0%, transparent 58%),
+    radial-gradient(880px 700px at 100% 0%, var(--g1) 0%, transparent 55%),
+    radial-gradient(1200px 800px at 50% 118%, var(--g2) 0%, transparent 60%);
+  background-attachment:fixed;min-height:100vh;
+  transition:background-color .45s ease,color .45s ease;
+  padding-bottom:calc(24px + env(safe-area-inset-bottom));
+}
+button,input,select{font-family:inherit;font-size:inherit;color:inherit}
+h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.01em}
+.glass{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  box-shadow:var(--shadow);backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%);
+  transition:background-color .4s ease,border-color .4s ease,box-shadow .3s ease}
+
+/* ============ Splash ============ */
+#splash{position:fixed;inset:0;z-index:9000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+  background:linear-gradient(155deg,#062F26 0%,#0F6B54 48%,#0A4436 100%);transition:opacity .7s ease,visibility .7s ease}
+#splash.hide{opacity:0;visibility:hidden;pointer-events:none}
+.splash-logo{width:148px;height:148px;animation:logoIn 1.1s cubic-bezier(.2,.8,.2,1) both;filter:drop-shadow(0 0 26px rgba(95,211,174,.6))}
+.splash-title{color:#fff;font-size:clamp(21px,5.2vw,32px);font-weight:800;text-align:center;animation:fadeUp .9s .35s both;text-shadow:0 0 22px rgba(95,211,174,.5)}
+.splash-sub{color:#BFE9DA;font-size:clamp(13px,3.2vw,16px);animation:fadeUp .9s .6s both;text-align:center;padding:0 22px}
+.splash-bar{width:190px;height:5px;border-radius:99px;background:rgba(255,255,255,.16);overflow:hidden;margin-top:6px;animation:fadeUp .8s .8s both}
+.splash-bar>i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#5FD3AE,#F2A81D);animation:loadBar 2.6s .2s ease-out forwards}
+.splash-glow{position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(95,211,174,.22),transparent 65%);animation:pulseGlow 3s ease-in-out infinite}
+@keyframes logoIn{0%{opacity:0;transform:scale(.55) rotate(-12deg)}100%{opacity:1;transform:none}}
+@keyframes fadeUp{0%{opacity:0;transform:translateY(18px)}100%{opacity:1;transform:none}}
+@keyframes loadBar{to{width:100%}}
+@keyframes pulseGlow{0%,100%{transform:scale(.9);opacity:.6}50%{transform:scale(1.1);opacity:1}}
+
+/* ============ Lock ============ */
+#lock{position:fixed;inset:0;z-index:8500;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:24px;
+  background:linear-gradient(155deg,rgba(6,47,38,.97),rgba(15,107,84,.97));backdrop-filter:blur(18px)}
+#lock.show{display:flex;animation:fadeUp .45s both}
+#lock .splash-logo{width:108px;height:108px;animation:none}
+.lock-title{color:#fff;font-size:21px;font-weight:800}
+.lock-desc{color:#BFE9DA;font-size:14px;max-width:340px}
+
+/* ============ Layout ============ */
+#app{display:none;max-width:820px;margin:0 auto;padding:14px}
+#app.show{display:block;animation:fadeUp .55s both}
+.appbar{position:sticky;top:8px;z-index:600;display:flex;align-items:center;gap:12px;padding:12px 15px;margin-bottom:16px;
+  background:var(--header-bg);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);
+  backdrop-filter:blur(18px) saturate(170%);-webkit-backdrop-filter:blur(18px) saturate(170%)}
+.appbar .brand{display:flex;align-items:center;gap:11px;flex:1;min-width:0}
+.appbar svg{width:42px;height:42px;flex:none}
+.appbar h1{font-size:15.5px;line-height:1.3}
+.appbar p{margin:0;font-size:11.5px;color:var(--text-mute)}
+.icon-btn{width:42px;height:42px;flex:none;display:grid;place-items:center;cursor:pointer;border-radius:13px;
+  border:1px solid var(--border);background:var(--surface-2);transition:transform .2s ease,border-color .25s ease,background .25s ease}
+.icon-btn:hover{transform:translateY(-2px);border-color:var(--c2);background:var(--input-bg)}
+.icon-btn:active{transform:scale(.94)}
+.icon-btn svg{width:20px;height:20px;stroke:var(--text);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+.hero{padding:18px 20px;margin-bottom:16px;border-radius:var(--radius);color:#fff;
+  background:linear-gradient(135deg,var(--c2),var(--c1));box-shadow:var(--shadow-lg);position:relative;overflow:hidden}
+.hero h2{font-size:18px;margin-bottom:4px}
+.hero p{margin:0;font-size:13px;opacity:.92}
+.hero svg{position:absolute;right:-12px;bottom:-18px;width:110px;height:110px;opacity:.16}
+
+.card{padding:20px}
+.card-head{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.card-head h2{font-size:16.5px}
+.card-head .dot{width:9px;height:9px;border-radius:50%;background:var(--c2);box-shadow:0 0 0 4px var(--ring)}
+.step{display:flex;align-items:center;gap:8px;margin:22px 0 12px;font-size:13.5px;font-weight:700;color:var(--c2)}
+.step .num{width:24px;height:24px;border-radius:8px;display:grid;place-items:center;background:linear-gradient(135deg,var(--c2),var(--c1));color:#fff;font-size:12.5px}
+.step .line{flex:1;height:1px;background:var(--border)}
+
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field.col-2{grid-column:span 2}
+label{font-size:13px;font-weight:600;color:var(--text-soft)}
+label .req{color:var(--danger)}
+input,select{width:100%;padding:12px 13px;border-radius:12px;border:1.5px solid var(--border-strong);background:var(--input-bg);
+  transition:border-color .2s ease,box-shadow .2s ease,background .3s ease}
+select{appearance:none;-webkit-appearance:none;cursor:pointer;
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23719085' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;background-size:17px;padding-right:38px}
+input:focus,select:focus{outline:none;border-color:var(--c2);box-shadow:0 0 0 4px var(--ring)}
+input.invalid,select.invalid{border-color:var(--danger);box-shadow:0 0 0 4px rgba(214,69,69,.16)}
+input:disabled,select:disabled{opacity:.55;cursor:not-allowed}
+.hint{font-size:11.5px;color:var(--text-mute)}
+.err{font-size:11.5px;color:var(--danger);font-weight:600;display:none}
+.err.show{display:block}
+.file-drop{display:flex;align-items:center;gap:12px;padding:13px;border-radius:12px;cursor:pointer;
+  border:1.5px dashed var(--border-strong);background:var(--surface-2);transition:all .25s ease}
+.file-drop:hover{border-color:var(--c2);background:var(--input-bg)}
+.file-drop img{width:56px;height:56px;object-fit:cover;border-radius:9px;display:none;border:1px solid var(--border)}
+.file-drop .fname{font-size:12.5px;color:var(--text-mute);flex:1;word-break:break-all}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;padding:13px 22px;border:0;border-radius:13px;
+  font-weight:700;font-size:15px;transition:transform .2s ease,box-shadow .25s ease,opacity .2s ease}
+.btn:hover{transform:translateY(-2px)} .btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.btn-primary{background:linear-gradient(135deg,var(--c2),var(--c1));color:#fff;box-shadow:0 8px 22px rgba(18,163,126,.35)}
+.btn-gold{background:linear-gradient(135deg,#F2A81D,#E2861B);color:#241503;box-shadow:0 8px 22px rgba(242,168,29,.35)}
+.btn-ghost{background:var(--surface-2);color:var(--text);border:1px solid var(--border-strong)}
+.btn-block{width:100%}
+.btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.spinner{width:16px;height:16px;border:2.5px solid rgba(255,255,255,.35);border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;display:none}
+.btn.loading .spinner{display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ============ หน้าสำเร็จ ============ */
+#success{display:none;text-align:center;padding:28px 22px}
+#success.show{display:block;animation:fadeUp .5s both}
+.tick{width:96px;height:96px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--c2),var(--c1));box-shadow:0 12px 30px rgba(18,163,126,.4);animation:pop .5s cubic-bezier(.2,.9,.3,1.4) both}
+.tick svg{width:48px;height:48px;stroke:#fff;fill:none;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}
+@keyframes pop{0%{transform:scale(.4);opacity:0}100%{transform:none;opacity:1}}
+.summary{text-align:left;margin:18px 0;padding:16px;border-radius:14px;background:var(--surface-2);border:1px solid var(--border)}
+.summary div{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px dashed var(--border);font-size:13.5px}
+.summary div:last-child{border-bottom:0}
+.summary span:first-child{color:var(--text-mute)}
+.summary span:last-child{font-weight:700;text-align:right}
+
+/* ============ Toast ============ */
+#toasts{position:fixed;right:16px;bottom:16px;z-index:9500;display:flex;flex-direction:column;gap:10px;max-width:calc(100vw - 32px)}
+.toast{display:flex;align-items:flex-start;gap:10px;min-width:240px;max-width:350px;padding:13px 15px;border-radius:14px;
+  background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow-lg);backdrop-filter:blur(16px);
+  animation:toastIn .35s cubic-bezier(.2,.9,.3,1.2) both;font-size:13.5px}
+.toast.out{animation:toastOut .3s ease forwards}
+.toast .bar{width:4px;align-self:stretch;border-radius:99px;flex:none}
+.toast.ok .bar{background:var(--c2)} .toast.err .bar{background:var(--danger)}
+.toast.info .bar{background:#2E7BC4} .toast.warn .bar{background:var(--accent)}
+.toast b{display:block} .toast span{color:var(--text-soft);font-size:12.5px}
+@keyframes toastIn{from{opacity:0;transform:translateX(40px) scale(.95)}to{opacity:1;transform:none}}
+@keyframes toastOut{to{opacity:0;transform:translateX(40px) scale(.95)}}
+
+/* ============ ปรับให้ใช้งานได้ดีทุกแพลตฟอร์ม ============ */
+@media (max-width:768px){
+  input,select{font-size:16px;padding:13px 13px}  /* 16px กัน iOS ซูมหน้าจอเองตอนโฟกัสช่องกรอก */
+  select{padding-right:40px}
+  .btn{min-height:48px}                            /* touch target ขั้นต่ำตามแนวทาง iOS/Android */
+  .icon-btn{width:46px;height:46px}
+  .file-drop{min-height:64px}
+}
+@media (hover:none){ .btn:hover,.icon-btn:hover{transform:none} }  /* ปิด hover effect บนจอสัมผัส */
+@media (prefers-reduced-motion:reduce){ *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important} }
+@media (min-width:1200px){ #app{max-width:900px} }
+@media (max-width:600px){
+  #app{padding:10px}
+  .form-grid{grid-template-columns:1fr}
+  .field.col-2{grid-column:span 1}
+  .appbar p{display:none}
+  #toasts{left:12px;right:12px;bottom:12px}
+  .toast{max-width:none}
+}
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <div class="splash-glow"></div>
+  <div class="splash-logo" id="splashLogo"></div>
+  <div class="splash-title">ลงทะเบียนรถยนต์พนักงาน</div>
+  <div class="splash-sub">Seacon Vehicle Register · ศูนย์การค้าซีคอนสแควร์</div>
+  <div class="splash-bar"><i></i></div>
+</div>
+
+<div id="lock">
+  <div class="splash-logo" id="lockLogo"></div>
+  <div class="lock-title">หน้าจอถูกล็อกอัตโนมัติ</div>
+  <div class="lock-desc">ระบบล้างข้อมูลในแบบฟอร์มและซ่อนหน้าจอ เนื่องจากไม่มีการใช้งานเกินเวลาที่กำหนด</div>
+  <button class="btn btn-gold" id="btnUnlock">แตะเพื่อเริ่มกรอกใหม่</button>
+</div>
+
+<div id="app">
+  <header class="appbar">
+    <div class="brand">
+      <span id="headerLogo"></span>
+      <div style="min-width:0">
+        <h1>แบบฟอร์มลงทะเบียนรถยนต์พนักงาน</h1>
+        <p>Seacon Vehicle Register · สำหรับพนักงานศูนย์การค้า</p>
+      </div>
+    </div>
+    <button class="icon-btn" id="btnTheme" title="สลับโหมดสว่าง/มืด"><svg id="icoTheme" viewBox="0 0 24 24"></svg></button>
+  </header>
+
+  <section class="hero">
+    <h2>กรอกข้อมูลรถยนต์ของท่าน</h2>
+    <p>ข้อมูลนี้ใช้สำหรับการตรวจสอบสิทธิ์จอดรถภายในศูนย์การค้าเท่านั้น กรุณากรอกข้อมูลตามความเป็นจริง</p>
+    <svg viewBox="0 0 24 24" fill="#fff"><path d="M5 17h14l-1.5-5.5A2 2 0 0 0 15.6 10H8.4a2 2 0 0 0-1.9 1.5L5 17zm1 3a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm12 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/></svg>
+  </section>
+
+  <section class="glass card" id="formCard">
+    <div class="card-head"><span class="dot"></span><h2>แบบฟอร์มบันทึกข้อมูล</h2></div>
+    <form id="vehForm" autocomplete="off" novalidate>
+
+      <div class="step"><span class="num">1</span>ข้อมูลพนักงาน<span class="line"></span></div>
+      <div class="form-grid">
+        <div class="field col-2">
+          <label for="fName">ชื่อ - นามสกุล <span class="req">*</span></label>
+          <input type="text" id="fName" placeholder="เช่น สมชาย ใจดี">
+          <div class="err" id="eName"></div>
+        </div>
+        <div class="field">
+          <label for="fEmpId">รหัสพนักงาน <span class="req">*</span></label>
+          <input type="text" id="fEmpId" placeholder="เช่น 65001">
+          <div class="err" id="eEmpId"></div>
+        </div>
+        <div class="field">
+          <label for="fDept">สังกัดแผนก <span class="req">*</span></label>
+          <select id="fDept"></select>
+          <div class="err" id="eDept"></div>
+        </div>
+        <div class="field col-2" id="wrapDeptOther" style="display:none">
+          <label for="fDeptOther">ระบุชื่อแผนก <span class="req">*</span></label>
+          <input type="text" id="fDeptOther" placeholder="พิมพ์ชื่อแผนกของท่าน">
+          <div class="err" id="eDeptOther"></div>
+        </div>
+        <div class="field col-2">
+          <label for="fPhone">เบอร์โทรศัพท์ <span class="req">*</span></label>
+          <input type="tel" id="fPhone" inputmode="tel" maxlength="12" placeholder="08X-XXX-XXXX หรือ 0X-XXX-XXXX">
+          <div class="hint" id="hPhone">ระบบใส่ขีดให้อัตโนมัติ · มือถือ 10 หลัก / เบอร์บ้าน-สำนักงาน 9 หลัก</div>
+          <div class="err" id="ePhone"></div>
+        </div>
+      </div>
+
+      <div class="step"><span class="num">2</span>ข้อมูลรถยนต์<span class="line"></span></div>
+      <div class="form-grid">
+        <div class="field">
+          <label for="fPlateNum">ทะเบียนรถยนต์ <span class="req">*</span></label>
+          <input type="text" id="fPlateNum" placeholder="เช่น กข1234 หรือ 1กก1234">
+          <div class="hint">ห้ามเว้นวรรค ระบบตัดช่องว่างให้อัตโนมัติ</div>
+          <div class="err" id="ePlate"></div>
+        </div>
+        <div class="field">
+          <label for="fProvince">จังหวัดที่จดทะเบียน <span class="req">*</span></label>
+          <select id="fProvince"></select>
+          <div class="err" id="eProvince"></div>
+        </div>
+        <div class="field">
+          <label for="fBrand">ยี่ห้อรถยนต์ <span class="req">*</span></label>
+          <select id="fBrand"></select>
+          <div class="err" id="eBrand"></div>
+        </div>
+        <div class="field">
+          <label for="fModel">รุ่น <span class="req">*</span></label>
+          <select id="fModel" disabled><option value="">— กรุณาเลือกยี่ห้อก่อน —</option></select>
+          <div class="err" id="eModel"></div>
+        </div>
+        <div class="field col-2" id="wrapBrandOther" style="display:none">
+          <label for="fBrandOther">ระบุยี่ห้อ <span class="req">*</span></label>
+          <input type="text" id="fBrandOther" placeholder="พิมพ์ชื่อยี่ห้อรถ">
+          <div class="err" id="eBrandOther"></div>
+        </div>
+        <div class="field col-2" id="wrapModelOther" style="display:none">
+          <label for="fModelOther">ระบุรุ่น <span class="req">*</span></label>
+          <input type="text" id="fModelOther" placeholder="พิมพ์ชื่อรุ่นรถ">
+          <div class="err" id="eModelOther"></div>
+        </div>
+        <div class="field">
+          <label for="fColor">สีรถยนต์ <span class="req">*</span></label>
+          <select id="fColor"></select>
+          <div class="err" id="eColor"></div>
+        </div>
+        <div class="field" id="wrapColorOther" style="display:none">
+          <label for="fColorOther">ระบุสี <span class="req">*</span></label>
+          <input type="text" id="fColorOther" placeholder="พิมพ์สีรถของท่าน">
+          <div class="err" id="eColorOther"></div>
+        </div>
+      </div>
+
+      <div class="step"><span class="num">3</span>หลักฐานประกอบ<span class="line"></span></div>
+      <div class="form-grid">
+        <div class="field col-2">
+          <label for="fPhoto">แนบภาพถ่ายบัตรพนักงาน</label>
+          <label class="file-drop" for="fPhoto">
+            <img id="photoPrev" alt="ตัวอย่างภาพบัตรพนักงาน">
+            <svg viewBox="0 0 24 24" style="width:24px;height:24px;stroke:var(--c2);fill:none;stroke-width:2;stroke-linecap:round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v13"/></svg>
+            <span class="fname" id="photoName">แตะเพื่อถ่ายภาพหรือเลือกไฟล์ (ระบบย่อขนาดให้อัตโนมัติ)</span>
+          </label>
+          <input type="file" id="fPhoto" accept="image/*" style="display:none">
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button type="submit" class="btn btn-primary btn-block" id="btnSave"><span class="spinner"></span><span id="btnSaveTxt">ส่งข้อมูลลงทะเบียน</span></button>
+        <button type="button" class="btn btn-ghost btn-block" id="btnClear">ล้างแบบฟอร์ม</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="glass card" id="success">
+    <div class="tick"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+    <h2 style="font-size:20px">ลงทะเบียนสำเร็จ</h2>
+    <p style="color:var(--text-soft);font-size:14px;margin:6px 0 0">ระบบบันทึกข้อมูลรถยนต์ของท่านเรียบร้อยแล้ว</p>
+    <div class="summary" id="sumBox"></div>
+    <button class="btn btn-primary btn-block" id="btnAgain">ลงทะเบียนคันถัดไป</button>
+  </section>
+
+  <p style="text-align:center;font-size:11.5px;color:var(--text-mute);margin-top:18px">
+    แผนกลานจอดรถและจราจร · ศูนย์การค้าซีคอนสแควร์ · ข้อมูลถูกจัดเก็บเพื่อการบริหารพื้นที่จอดรถเท่านั้น
+  </p>
+</div>
+
+<div id="toasts"></div>
+
+<script>
+/* ==================================================================
+   SEACON VEHICLE REGISTER (FORM APP) v2.0
+   แอปสำหรับพนักงานกรอกข้อมูลรถยนต์ — เขียนข้อมูลอย่างเดียว ไม่แสดงข้อมูลผู้อื่น
+   ================================================================== */
+const CONFIG = {
+  API_URL: 'https://script.google.com/macros/s/AKfycbynhDuYwrpAwydFxQXUfosIZ8W31Y-z4_bxkC4UfLCmvbC21_QZumTv2Wh1E7wUx2Ptvw/exec',
+  TOKEN: 'SBK-VP-2569-CHANGE-21',   // *** ต้องตรงกับตัวแปร API_TOKEN ใน Code.gs ***
+  SPLASH_MS: 2800,
+  IDLE_MS: 4 * 60 * 1000,
+  IMG_MAX: 900, IMG_QUALITY: 0.72,
+  TIMEOUT_MS: 45000,        // เวลารอเซิร์ฟเวอร์สูงสุด (การอัปโหลดรูปใช้เวลานานกว่าปกติ)
+  MAX_FILE_MB: 20           // ขนาดไฟล์ภาพต้นทางสูงสุดที่ยอมให้เลือก
+};
+
+/* ==================================================================
+   ฐานข้อมูลอ้างอิงกลาง — ยี่ห้อ/รุ่นรถยนต์ที่จำหน่ายในประเทศไทย, สี, จังหวัด, แผนก
+   (ครอบคลุมทั้งรถใหม่ปัจจุบันและรุ่นเก่าที่ยังพบเห็นในลานจอด)
+   ================================================================== */
+const CAR_DB = {
+  "TOYOTA": ["Yaris","Yaris Ativ","Yaris Cross","Vios","Corolla Altis","Corolla Cross","Camry","C-HR","Prius","Hilux Revo","Hilux Champ","Hilux Vigo","Hilux Tiger","Fortuner","Innova","Innova Zenix","Avanza","Veloz","Sienta","Rush","Alphard","Vellfire","Majesty","Commuter","Hiace","Granvia","Land Cruiser","Land Cruiser Prado","Fortuner Leader","Soluna","Wish","Estima","bZ4X","Altis","Corona","Mighty X","อื่นๆ"],
+  "HONDA": ["City","City e:HEV","City Hatchback","Civic","Civic e:HEV","Civic Type R","Accord","Jazz","Brio","Brio Amaze","Mobilio","BR-V","WR-V","HR-V","ZR-V","CR-V","e:N1","Freed","Odyssey","Stream","StepWGN","CR-Z","Integra","S2000","อื่นๆ"],
+  "ISUZU": ["D-Max","D-Max V-Cross","D-Max Hi-Lander","D-Max Spark","D-Max Cab4","MU-X","MU-7","Dragon Eyes","Dragon Power","Adventure Master","TFR","ELF","NPR","NQR","FRR","FVM","อื่นๆ"],
+  "MITSUBISHI": ["Mirage","Attrage","Triton","Triton Athlete","Pajero Sport","Xpander","Xpander Cross","Xpander HEV","Xforce","Outlander PHEV","Space Wagon","Lancer","Lancer EX","Strada","L200","อื่นๆ"],
+  "NISSAN": ["Almera","March","Note","Sylphy","Teana","Kicks e-Power","X-Trail","Navara","Terra","Juke","Livina","Leaf","Tiida","Sunny Neo","Cefiro","Skyline","GT-R","NV350 Urvan","อื่นๆ"],
+  "MAZDA": ["Mazda2","Mazda3","Mazda6","CX-3","CX-30","CX-5","CX-8","CX-9","CX-60","BT-50","BT-50 Pro","MX-5","Mazda 323","Mazda 626","อื่นๆ"],
+  "FORD": ["Ranger","Ranger Raptor","Ranger Wildtrak","Everest","Territory","EcoSport","Focus","Fiesta","Escape","Mustang","อื่นๆ"],
+  "MG": ["MG3","MG4 Electric","MG5","MG6","MG ZS","MG ZS EV","MG HS","MG VS HEV","MG EP","MG GS","MG Extender","MG Cyberster","MG Maxus 9","อื่นๆ"],
+  "BYD": ["Atto 3","Dolphin","Seal","Seal U DM-i","Sealion 6","Sealion 7","M6","Han","Tang","Song Plus","อื่นๆ"],
+  "GWM / HAVAL": ["Haval H6","Haval H6 PHEV","Haval Jolion","Tank 300","Tank 500","Poer / Cannon","อื่นๆ"],
+  "ORA": ["Good Cat","Good Cat GT","Ora 03","Ora 07","อื่นๆ"],
+  "NETA": ["Neta V","Neta V-II","Neta X","Neta S","Neta GT","Neta Aya","อื่นๆ"],
+  "SUZUKI": ["Swift","Ciaz","Celerio","Ertiga","XL7","Jimny","Vitara","Carry","APV","Caribian","อื่นๆ"],
+  "HYUNDAI": ["H-1","Staria","Creta","Custin","Stargazer","Tucson","Santa Fe","Elantra","Accent","Kona","Ioniq 5","Ioniq 6","อื่นๆ"],
+  "KIA": ["Picanto","Cerato","Seltos","Sonet","Sorento","Carnival","Grand Carnival","Soul","EV6","EV9","อื่นๆ"],
+  "CHEVROLET": ["Colorado","Trailblazer","Captiva","Cruze","Aveo","Sonic","Optra","Zafira","Trax","อื่นๆ"],
+  "MERCEDES-BENZ": ["A-Class","C-Class","E-Class","S-Class","CLA","CLS","GLA","GLB","GLC","GLE","GLS","G-Class","V-Class","Vito","Sprinter","EQA","EQB","EQE","EQS","SL","อื่นๆ"],
+  "BMW": ["Series 1","Series 2","Series 3","Series 4","Series 5","Series 6","Series 7","Series 8","X1","X2","X3","X4","X5","X6","X7","Z4","i3","i4","i5","i7","iX","iX1","iX3","M3","M5","อื่นๆ"],
+  "AUDI": ["A1","A3","A4","A5","A6","A7","A8","Q2","Q3","Q5","Q7","Q8","e-tron","Q8 e-tron","TT","อื่นๆ"],
+  "VOLVO": ["XC40","XC60","XC90","S60","S90","V60","C40","EX30","EX90","อื่นๆ"],
+  "LEXUS": ["ES","IS","GS","LS","UX","NX","RX","LM","LX","RZ","CT200h","อื่นๆ"],
+  "SUBARU": ["Forester","XV","Crosstrek","Outback","Impreza","WRX","BRZ","Levorg","อื่นๆ"],
+  "TESLA": ["Model 3","Model Y","Model S","Model X","อื่นๆ"],
+  "VOLKSWAGEN": ["Golf","Polo","Passat","Tiguan","Caravelle","Beetle","อื่นๆ"],
+  "PEUGEOT": ["208","2008","e-2008","308","3008","5008","Partner","อื่นๆ"],
+  "MINI": ["Cooper","Cooper S","Countryman","Clubman","Paceman","อื่นๆ"],
+  "PORSCHE": ["911","Cayenne","Macan","Panamera","Taycan","Boxster","Cayman","อื่นๆ"],
+  "LAND ROVER": ["Defender","Discovery","Discovery Sport","Range Rover","Range Rover Sport","Range Rover Evoque","Range Rover Velar","อื่นๆ"],
+  "JEEP": ["Wrangler","Grand Cherokee","Compass","Renegade","Cherokee","อื่นๆ"],
+  "AION": ["Aion Y Plus","Aion ES","Aion V","Aion Hyptec HT","อื่นๆ"],
+  "DEEPAL": ["Deepal S07","Deepal L07","อื่นๆ"],
+  "CHANGAN": ["Lumin","CS55 Plus","Hunter","อื่นๆ"],
+  "ZEEKR": ["Zeekr 001","Zeekr X","Zeekr 009","อื่นๆ"],
+  "XPENG": ["G6","G9","X9","อื่นๆ"],
+  "WULING": ["Bingo","Air EV","Cloud EV","อื่นๆ"],
+  "GAC": ["Emzoom","Emkoo","M8","อื่นๆ"],
+  "JAECOO / OMODA": ["Jaecoo 6","Jaecoo 7","Omoda C5","Omoda 5 EV","อื่นๆ"],
+  "DAIHATSU": ["Mira","Move","Terios","อื่นๆ"],
+  "PROTON": ["Saga","Persona","Waja","Exora","อื่นๆ"],
+  "TATA": ["Xenon","Super Ace","อื่นๆ"],
+  "THAIRUNG": ["TR Transformer","TR Adventure","อื่นๆ"],
+  "HINO": ["XZU","FC","FG","Dutro","อื่นๆ"],
+  "FUSO": ["Canter","Fighter","อื่นๆ"],
+  "FOTON": ["Tunland","View","อื่นๆ"],
+  "อื่นๆ (ระบุเอง)": ["อื่นๆ"]
+};
+
+const COLORS = ['ขาว','ขาวมุก','ขาว-ดำ (ทูโทน)','ดำ','ดำเงา','เทา','เทาเข้ม','เทาอ่อน','เทาดำ','เงิน','บรอนซ์เงิน','บรอนซ์ทอง','แดง','แดงเข้ม','แดงเลือดหมู','ส้ม','เหลือง','เหลืองมัสตาร์ด','น้ำเงิน','น้ำเงินเข้ม','ฟ้า','ฟ้าอ่อน','เขียว','เขียวเข้ม','เขียวอ่อน','เขียวขี้ม้า','น้ำตาล','น้ำตาลอ่อน','ครีม','เบจ','ทอง','ชมพู','ม่วง','ฟ้า-ขาว (ทูโทน)','อื่นๆ (ระบุเอง)'];
+
+const PROVINCES = ['กรุงเทพมหานคร','กระบี่','กาญจนบุรี','กาฬสินธุ์','กำแพงเพชร','ขอนแก่น','จันทบุรี','ฉะเชิงเทรา','ชลบุรี','ชัยนาท','ชัยภูมิ','ชุมพร','เชียงราย','เชียงใหม่','ตรัง','ตราด','ตาก','นครนายก','นครปฐม','นครพนม','นครราชสีมา','นครศรีธรรมราช','นครสวรรค์','นนทบุรี','นราธิวาส','น่าน','บึงกาฬ','บุรีรัมย์','ปทุมธานี','ประจวบคีรีขันธ์','ปราจีนบุรี','ปัตตานี','พระนครศรีอยุธยา','พะเยา','พังงา','พัทลุง','พิจิตร','พิษณุโลก','เพชรบุรี','เพชรบูรณ์','แพร่','ภูเก็ต','มหาสารคาม','มุกดาหาร','แม่ฮ่องสอน','ยโสธร','ยะลา','ร้อยเอ็ด','ระนอง','ระยอง','ราชบุรี','ลพบุรี','ลำปาง','ลำพูน','เลย','ศรีสะเกษ','สกลนคร','สงขลา','สตูล','สมุทรปราการ','สมุทรสงคราม','สมุทรสาคร','สระแก้ว','สระบุรี','สิงห์บุรี','สุโขทัย','สุพรรณบุรี','สุราษฎร์ธานี','สุรินทร์','หนองคาย','หนองบัวลำภู','อ่างทอง','อำนาจเจริญ','อุดรธานี','อุตรดิตถ์','อุทัยธานี','อุบลราชธานี'];
+
+const DEPTS = ['ลานจอดรถและจราจร','รักษาความปลอดภัย','แม่บ้านและสุขาภิบาล','ช่างเทคนิค/วิศวกรรม','ปฏิบัติการศูนย์การค้า','การตลาดและประชาสัมพันธ์','บริหารพื้นที่เช่า','บัญชีและการเงิน','ทรัพยากรบุคคล','จัดซื้อและพัสดุ','เทคโนโลยีสารสนเทศ','ลูกค้าสัมพันธ์','อาคารสถานที่','ความปลอดภัยและสิ่งแวดล้อม','ผู้บริหาร/สำนักกรรมการ','อื่นๆ (ระบุเอง)'];
+
+const TH_MONTH = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+const TH_MONTH_SHORT = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+
+/* ==================================================================
+   ยูทิลิตี้เบอร์โทรศัพท์ — ใส่ขีดอัตโนมัติตามมาตรฐานไทย
+   มือถือ 10 หลัก : 08X-XXX-XXXX
+   กรุงเทพฯ 9 หลัก : 02-XXX-XXXX
+   ต่างจังหวัด 9 หลัก : 0XX-XXX-XXX
+   ================================================================== */
+function phoneDigits(v) {
+  var d = String(v || '').replace(/\D/g, '');
+  // แปลงรูปแบบสากล +66 81 234 5678 / 0066... ให้เป็นเลขไทยมาตรฐาน 0XXXXXXXXX
+  if (/^0{2}66/.test(d)) d = d.slice(4);
+  else if (/^66/.test(d) && d.length >= 11) d = d.slice(2);
+  if (d.length && d[0] !== '0') d = '0' + d;
+  return d.slice(0, 10);
+}
+function phoneMaxLen(d) {
+  if (/^0[689]/.test(d)) return 10;   // 06/08/09 = มือถือ
+  if (/^0/.test(d)) return 9;         // 02-07 = เบอร์บ้าน/สำนักงาน
+  return 10;
+}
+function formatPhone(v) {
+  let d = phoneDigits(v);
+  const max = phoneMaxLen(d);
+  d = d.slice(0, max);
+  if (max === 10) return [d.slice(0, 3), d.slice(3, 6), d.slice(6, 10)].filter(Boolean).join('-');
+  if (/^02/.test(d)) return [d.slice(0, 2), d.slice(2, 5), d.slice(5, 9)].filter(Boolean).join('-');
+  return [d.slice(0, 3), d.slice(3, 6), d.slice(6, 9)].filter(Boolean).join('-');
+}
+function validPhone(v) {
+  // ตัดตามความยาวมาตรฐานก่อน เพื่อให้ผลตรงกับค่าที่ช่องกรอกแสดงจริงเสมอ
+  const raw = phoneDigits(v);
+  const d = raw.slice(0, phoneMaxLen(raw));
+  if (/^0[689]\d{8}$/.test(d)) return true;   // มือถือครบ 10 หลัก
+  if (/^0[2-7]\d{7}$/.test(d)) return true;   // เบอร์บ้าน/สำนักงานครบ 9 หลัก
+  return false;
+}
+function phoneProgress(v) {
+  const raw = phoneDigits(v);
+  if (!raw.length) return '';
+  const max = phoneMaxLen(raw);
+  const d = raw.slice(0, max);
+  const kind = max === 10 ? 'เบอร์มือถือ' : 'เบอร์บ้าน/สำนักงาน';
+  return `${kind} · กรอกแล้ว ${d.length}/${max} หลัก`;
+}
+
+
+/* ============ โลโก้แอปฟอร์ม — ทรงสี่เหลี่ยมมนสีเขียว + รถและปากกาบันทึก ============ */
+const LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="fg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#25C79B"/><stop offset="100%" stop-color="#0A4436"/></linearGradient>
+    <linearGradient id="fg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FFD37E"/><stop offset="100%" stop-color="#F2A81D"/></linearGradient>
+  </defs>
+  <rect x="36" y="36" width="440" height="440" rx="112" fill="url(#fg1)"/>
+  <rect x="36" y="36" width="440" height="440" rx="112" fill="none" stroke="#5FD3AE" stroke-width="10" opacity=".55"/>
+  <path d="M138 286h236l-25-80c-7-22-27-37-50-37H213c-23 0-43 15-50 37Z" fill="#EFFBF6"/>
+  <rect x="120" y="286" width="272" height="56" rx="22" fill="#EFFBF6"/>
+  <circle cx="176" cy="342" r="28" fill="#EFFBF6"/><circle cx="176" cy="342" r="12" fill="#0A4436"/>
+  <circle cx="336" cy="342" r="28" fill="#EFFBF6"/><circle cx="336" cy="342" r="12" fill="#0A4436"/>
+  <path d="M205 254h102l-13-40h-76Z" fill="#0A4436" opacity=".3"/>
+  <rect x="196" y="88" width="120" height="86" rx="18" fill="url(#fg2)"/>
+  <path d="M222 118h68M222 144h44" stroke="#0A4436" stroke-width="14" stroke-linecap="round"/>
+  <path d="M330 96l52 52-74 74-56 4 4-56Z" fill="#EFFBF6"/>
+  <path d="M330 96l52 52" stroke="#0A4436" stroke-width="12" stroke-linecap="round" opacity=".35"/>
+</svg>`;
+
+const state = { photoBase64: null, photoMime: '', busy: false };
+const $ = (id) => document.getElementById(id);
+
+/* ============ Toast ============ */
+function toast(type, title, desc, ms) {
+  const box = document.createElement('div');
+  box.className = 'toast ' + type;
+  box.innerHTML = '<i class="bar"></i><div><b></b><span></span></div>';
+  box.querySelector('b').textContent = title;
+  box.querySelector('span').textContent = desc || '';
+  $('toasts').appendChild(box);
+  setTimeout(() => { box.classList.add('out'); setTimeout(() => box.remove(), 320); }, ms || (type === 'err' ? 5200 : 3200));
+  return box;
+}
+
+/* ============ ธีม ============ */
+const ICON_MOON = '<path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/>';
+const ICON_SUN = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  $('icoTheme').innerHTML = (t === 'dark') ? ICON_SUN : ICON_MOON;
+  document.querySelector('meta[name="theme-color"]').setAttribute('content', t === 'dark' ? '#051713' : '#0F6B54');
+  try { localStorage.setItem('sbk_form_theme', t); } catch (e) {}
+}
+
+/* ============ PWA ============ */
+function svgToPng(svg, size) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const c = document.createElement('canvas'); c.width = c.height = size;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#0A4436'; ctx.fillRect(0, 0, size, size);
+      const pad = Math.round(size * 0.06);
+      ctx.drawImage(img, pad, pad, size - pad * 2, size - pad * 2);
+      resolve(c.toDataURL('image/png'));
+    };
+    img.onerror = () => resolve('');
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  });
+}
+async function setupPWA() {
+  $('lnkFavicon').href = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(LOGO_SVG);
+  const [i192, i512] = await Promise.all([svgToPng(LOGO_SVG, 192), svgToPng(LOGO_SVG, 512)]);
+  if (i192) $('lnkAppleIcon').href = i192;
+  const manifest = {
+    name: 'ลงทะเบียนรถยนต์พนักงาน Seacon', short_name: 'ลงทะเบียนรถ',
+    description: 'แบบฟอร์มลงทะเบียนรถยนต์พนักงาน ศูนย์การค้าซีคอนสแควร์',
+    start_url: location.href, scope: './', display: 'standalone', orientation: 'portrait-primary',
+    background_color: '#0A4436', theme_color: '#0F6B54', lang: 'th',
+    icons: [
+      { src: i192, sizes: '192x192', type: 'image/png', purpose: 'any' },
+      { src: i512, sizes: '512x512', type: 'image/png', purpose: 'any' },
+      { src: i512, sizes: '512x512', type: 'image/png', purpose: 'maskable' }
+    ]
+  };
+  $('lnkManifest').href = URL.createObjectURL(new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' }));
+}
+
+/* ============ เชื่อมต่อ Apps Script (เขียนอย่างเดียว) ============ */
+async function apiPost(payload) {
+  if (!CONFIG.API_URL || CONFIG.API_URL.indexOf('XXXX') > -1) {
+    throw new Error('ยังไม่ได้ตั้งค่า API_URL กรุณาแจ้งผู้ดูแลระบบ');
+  }
+  if (!navigator.onLine) throw new Error('อุปกรณ์ไม่ได้เชื่อมต่ออินเทอร์เน็ต กรุณาตรวจสอบสัญญาณแล้วลองใหม่');
+
+  // ตัดการรอที่ค้างไม่สิ้นสุด (เช่นสัญญาณหลุดกลางทาง) ด้วย AbortController
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), CONFIG.TIMEOUT_MS);
+  let res, txt;
+  try {
+    res = await fetch(CONFIG.API_URL, {
+      method: 'POST', redirect: 'follow', signal: ctrl.signal,
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // text/plain เพื่อไม่ให้เกิด CORS preflight
+      body: JSON.stringify(Object.assign({ token: CONFIG.TOKEN }, payload))
+    });
+    txt = await res.text();
+  } catch (e) {
+    if (e.name === 'AbortError') throw new Error('เชื่อมต่อเซิร์ฟเวอร์นานเกินกำหนด กรุณาลองใหม่อีกครั้ง');
+    throw new Error('เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองใหม่');
+  } finally { clearTimeout(timer); }
+
+  let json;
+  try { json = JSON.parse(txt); }
+  catch (e) {
+    // Apps Script ตอบเป็นหน้า HTML เมื่อสิทธิ์ Deploy ไม่ถูกต้อง — แยกกรณีนี้ออกมาเพื่อให้แก้ได้ตรงจุด
+    if (/<html|<!DOCTYPE/i.test(txt || '')) {
+      throw new Error('เซิร์ฟเวอร์ตอบกลับเป็นหน้าเว็บแทนข้อมูล — ให้ผู้ดูแลตรวจการตั้งค่า Deploy เป็น "Anyone" และ Execute as "Me"');
+    }
+    throw new Error('เซิร์ฟเวอร์ตอบกลับไม่ถูกต้อง กรุณาแจ้งผู้ดูแลระบบ');
+  }
+  if (!json || typeof json !== 'object') throw new Error('เซิร์ฟเวอร์ตอบกลับไม่ถูกต้อง');
+  if (!json.ok) throw new Error(json.error || 'เกิดข้อผิดพลาดที่เซิร์ฟเวอร์');
+  return json;
+}
+
+/* ============ ตัวเลือกดรอปดาวน์ทั้งหมด ============ */
+const OTHER = 'อื่นๆ (ระบุเอง)';
+function fillSelect(sel, items, placeholder) {
+  sel.innerHTML = `<option value="">${placeholder}</option>` + items.map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join('');
+}
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+
+function initSelects() {
+  fillSelect($('fDept'), DEPTS, '— เลือกแผนก —');
+  fillSelect($('fProvince'), PROVINCES, '— เลือกจังหวัด —');
+  fillSelect($('fBrand'), Object.keys(CAR_DB), '— เลือกยี่ห้อ —');
+  fillSelect($('fColor'), COLORS, '— เลือกสี —');
+}
+/** เปลี่ยนยี่ห้อ → เติมรายการรุ่นของยี่ห้อนั้น (dependent dropdown) */
+function onBrandChange() {
+  const b = $('fBrand').value;
+  const other = (b === 'อื่นๆ (ระบุเอง)');
+  $('wrapBrandOther').style.display = other ? 'flex' : 'none';
+  $('wrapModelOther').style.display = other ? 'flex' : 'none';
+  const modelSel = $('fModel');
+  if (!b) {
+    modelSel.innerHTML = '<option value="">— กรุณาเลือกยี่ห้อก่อน —</option>';
+    modelSel.disabled = true;
+  } else if (other) {
+    modelSel.innerHTML = '<option value="อื่นๆ">ระบุเองด้านล่าง</option>';
+    modelSel.value = 'อื่นๆ'; modelSel.disabled = true;
+  } else {
+    fillSelect(modelSel, CAR_DB[b] || ['อื่นๆ'], '— เลือกรุ่น —');
+    modelSel.disabled = false;
+  }
+}
+
+/* ============ Validation ============ */
+function normPlate(v) { return String(v || '').replace(/\s|-/g, '').toUpperCase(); }
+function validPlate(v) {
+  const p = normPlate(v);
+  if (p.length < 4 || p.length > 10) return false;
+  return /^[0-9]{0,2}[ก-ฮA-Z]{1,3}[0-9]{1,4}$/.test(p); // รองรับทั้ง กข1234 และ 1กก1234
+}
+function setErr(inputId, errId, msg) {
+  const inp = $(inputId), er = $(errId);
+  if (msg) { inp.classList.add('invalid'); er.textContent = msg; er.classList.add('show'); }
+  else { inp.classList.remove('invalid'); er.classList.remove('show'); }
+  return !msg;
+}
+function validateForm() {
+  let ok = true;
+  ok &= setErr('fName', 'eName', $('fName').value.trim().length < 3 ? 'กรุณากรอกชื่อ - นามสกุลให้ครบถ้วน' : '');
+  ok &= setErr('fEmpId', 'eEmpId', $('fEmpId').value.trim() ? '' : 'กรุณากรอกรหัสพนักงาน');
+  ok &= setErr('fDept', 'eDept', $('fDept').value ? '' : 'กรุณาเลือกสังกัดแผนก');
+  if ($('fDept').value === OTHER) ok &= setErr('fDeptOther', 'eDeptOther', $('fDeptOther').value.trim() ? '' : 'กรุณาระบุชื่อแผนก');
+  ok &= setErr('fPhone', 'ePhone', validPhone($('fPhone').value) ? '' : 'เบอร์โทรไม่ครบถ้วน — มือถือ 10 หลัก (08X-XXX-XXXX) หรือเบอร์บ้าน 9 หลัก (02-XXX-XXXX)');
+  ok &= setErr('fPlateNum', 'ePlate', validPlate($('fPlateNum').value) ? '' : 'รูปแบบทะเบียนไม่ถูกต้อง เช่น กข1234 หรือ 1กก1234');
+  ok &= setErr('fProvince', 'eProvince', $('fProvince').value ? '' : 'กรุณาเลือกจังหวัด');
+  ok &= setErr('fBrand', 'eBrand', $('fBrand').value ? '' : 'กรุณาเลือกยี่ห้อรถ');
+  if ($('fBrand').value === 'อื่นๆ (ระบุเอง)') {
+    ok &= setErr('fBrandOther', 'eBrandOther', $('fBrandOther').value.trim() ? '' : 'กรุณาระบุยี่ห้อรถ');
+    ok &= setErr('fModelOther', 'eModelOther', $('fModelOther').value.trim() ? '' : 'กรุณาระบุรุ่นรถ');
+  } else {
+    ok &= setErr('fModel', 'eModel', $('fModel').value ? '' : 'กรุณาเลือกรุ่นรถ');
+    if ($('fModel').value === 'อื่นๆ') ok &= setErr('fModelOther', 'eModelOther', $('fModelOther').value.trim() ? '' : 'กรุณาระบุรุ่นรถ');
+  }
+  ok &= setErr('fColor', 'eColor', $('fColor').value ? '' : 'กรุณาเลือกสีรถ');
+  if ($('fColor').value === OTHER) ok &= setErr('fColorOther', 'eColorOther', $('fColorOther').value.trim() ? '' : 'กรุณาระบุสีรถ');
+  return !!ok;
+}
+/** รวมค่าที่เลือกกับช่อง "ระบุเอง" ให้เป็นค่าเดียวก่อนส่งขึ้นชีต */
+function pick(selId, otherId, otherLabel) {
+  const v = $(selId).value;
+  return (v === otherLabel || v === 'อื่นๆ') ? $(otherId).value.trim() : v;
+}
+
+/* ============ บีบอัดรูป ============ */
+function compressImage(file) {
+  return new Promise((resolve, reject) => {
+    const fr = new FileReader();
+    fr.onerror = () => reject(new Error('อ่านไฟล์ภาพไม่สำเร็จ'));
+    fr.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error('ไฟล์ภาพไม่ถูกต้อง'));
+      img.onload = () => {
+        let w = img.width, h = img.height;
+        if (!w || !h) return reject(new Error('ไม่รองรับไฟล์ภาพรูปแบบนี้ กรุณาถ่ายใหม่หรือบันทึกเป็น JPG/PNG'));
+        const scale = Math.min(1, CONFIG.IMG_MAX / Math.max(w, h));
+        w = Math.round(w * scale); h = Math.round(h * scale);
+        const c = document.createElement('canvas'); c.width = w; c.height = h;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h); // กันพื้นโปร่งใสกลายเป็นดำเมื่อแปลง JPEG
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(c.toDataURL('image/jpeg', CONFIG.IMG_QUALITY));
+      };
+      img.src = fr.result;
+    };
+    fr.readAsDataURL(file);
+  });
+}
+
+/* ============ Idle Lock ============ */
+let idleTimer = null;
+function resetIdle() {
+  clearTimeout(idleTimer);
+  if ($('lock').classList.contains('show')) return;
+  idleTimer = setTimeout(lockScreen, CONFIG.IDLE_MS);
+}
+function lockScreen() {
+  clearTimeout(idleTimer);
+  if (state.busy) { resetIdle(); return; }   // ห้ามล็อก/ล้างฟอร์มระหว่างกำลังส่งข้อมูล
+  clearForm();                       // ล้างข้อมูลส่วนบุคคลทิ้งทันทีเพื่อไม่ให้ผู้อื่นเห็น
+  $('app').style.filter = 'blur(14px)';
+  $('lock').classList.add('show');
+}
+function unlockScreen() {
+  $('lock').classList.remove('show');
+  $('app').style.filter = '';
+  showForm(); resetIdle();
+}
+['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'click'].forEach(ev =>
+  document.addEventListener(ev, () => { if (!$('lock').classList.contains('show')) resetIdle(); }, { passive: true })
+);
+
+/* ============ สลับหน้าฟอร์ม/สำเร็จ ============ */
+function showForm() { $('formCard').style.display = 'block'; $('success').classList.remove('show'); }
+function showSuccess(d) {
+  $('formCard').style.display = 'none';
+  $('sumBox').innerHTML = [
+    ['ชื่อ - นามสกุล', d.name], ['รหัสพนักงาน', d.empId], ['สังกัดแผนก', d.dept],
+    ['ทะเบียนรถยนต์', d.plate], ['จังหวัด', d.province],
+    ['ยี่ห้อ / รุ่น', (d.brand + ' ' + d.model).trim()], ['สี', d.color]
+  ].map(r => `<div><span>${esc(r[0])}</span><span>${esc(r[1] || '-')}</span></div>`).join('');
+  $('success').classList.add('show');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function clearForm() {
+  $('vehForm').reset();
+  state.photoBase64 = null; state.photoMime = '';
+  $('photoPrev').style.display = 'none'; $('photoPrev').removeAttribute('src');
+  $('photoName').textContent = 'แตะเพื่อถ่ายภาพหรือเลือกไฟล์ (ระบบย่อขนาดให้อัตโนมัติ)';
+  $('hPhone').textContent = 'ระบบใส่ขีดให้อัตโนมัติ · มือถือ 10 หลัก / เบอร์บ้าน-สำนักงาน 9 หลัก';
+  $('wrapDeptOther').style.display = 'none';
+  $('wrapBrandOther').style.display = 'none';
+  $('wrapModelOther').style.display = 'none';
+  $('wrapColorOther').style.display = 'none';
+  onBrandChange();
+  document.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
+  document.querySelectorAll('.err').forEach(el => el.classList.remove('show'));
+}
+
+/* ============ Init ============ */
+function init() {
+  $('splashLogo').innerHTML = LOGO_SVG; $('lockLogo').innerHTML = LOGO_SVG; $('headerLogo').innerHTML = LOGO_SVG;
+  let saved = null; try { saved = localStorage.getItem('sbk_form_theme'); } catch (e) {}
+  applyTheme(saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+  initSelects(); onBrandChange(); setupPWA();
+
+  setTimeout(() => { $('splash').classList.add('hide'); $('app').classList.add('show'); resetIdle(); }, CONFIG.SPLASH_MS);
+
+  $('btnTheme').addEventListener('click', () =>
+    applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
+  $('btnUnlock').addEventListener('click', unlockScreen);
+  $('btnAgain').addEventListener('click', () => { clearForm(); showForm(); });
+  $('btnClear').addEventListener('click', () => { clearForm(); toast('info', 'ล้างแบบฟอร์มแล้ว', 'พร้อมกรอกข้อมูลใหม่'); });
+
+  $('fBrand').addEventListener('change', onBrandChange);
+  $('fModel').addEventListener('change', () => {
+    $('wrapModelOther').style.display = ($('fModel').value === 'อื่นๆ') ? 'flex' : 'none';
+  });
+  $('fColor').addEventListener('change', () => {
+    $('wrapColorOther').style.display = ($('fColor').value === OTHER) ? 'flex' : 'none';
+  });
+  $('fDept').addEventListener('change', () => {
+    $('wrapDeptOther').style.display = ($('fDept').value === OTHER) ? 'flex' : 'none';
+  });
+  $('fPlateNum').addEventListener('input', e => { e.target.value = e.target.value.replace(/\s/g, ''); });
+  $('fPhone').addEventListener('input', e => {
+    e.target.value = formatPhone(e.target.value);
+    const p = phoneProgress(e.target.value);
+    $('hPhone').textContent = p || 'ระบบใส่ขีดให้อัตโนมัติ · มือถือ 10 หลัก / เบอร์บ้าน-สำนักงาน 9 หลัก';
+    if (validPhone(e.target.value)) setErr('fPhone', 'ePhone', '');
+  });
+
+  $('fPhoto').addEventListener('change', async (e) => {
+    const f = e.target.files[0]; if (!f) return;
+    if (!/^image\//.test(f.type)) { toast('err', 'ไฟล์ไม่ถูกต้อง', 'กรุณาเลือกไฟล์รูปภาพเท่านั้น'); e.target.value = ''; return; }
+    if (f.size > CONFIG.MAX_FILE_MB * 1024 * 1024) {
+      toast('err', 'ไฟล์ใหญ่เกินไป', `กรุณาเลือกไฟล์ไม่เกิน ${CONFIG.MAX_FILE_MB} MB`); e.target.value = ''; return;
+    }
+    try {
+      const dataUrl = await compressImage(f);
+      state.photoBase64 = dataUrl.split(',')[1]; state.photoMime = 'image/jpeg';
+      $('photoPrev').src = dataUrl; $('photoPrev').style.display = 'block';
+      $('photoName').textContent = f.name + ' · พร้อมอัปโหลด';
+      toast('ok', 'เตรียมรูปภาพเรียบร้อย', 'ระบบย่อขนาดไฟล์ให้อัตโนมัติแล้ว');
+    } catch (err) { state.photoBase64 = null; toast('err', 'เตรียมรูปภาพไม่สำเร็จ', err.message); }
+  });
+
+  $('vehForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (state.busy) return;   // กันกดส่งซ้ำระหว่างรอเซิร์ฟเวอร์ ทำให้ข้อมูลถูกบันทึก 2 ครั้ง
+    if (!validateForm()) {
+      // เลื่อนไปช่องแรกที่ผิด — ห่อไว้เพราะ WebView เก่าบางรุ่นไม่มี scrollIntoView/preventScroll
+      const firstBad = document.querySelector('#vehForm .invalid');
+      if (firstBad) {
+        try { if (firstBad.scrollIntoView) firstBad.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
+        try { firstBad.focus({ preventScroll: true }); } catch (e) { try { firstBad.focus(); } catch (e2) {} }
+      }
+      return toast('warn', 'ข้อมูลไม่ครบถ้วน', 'กรุณาตรวจสอบช่องที่มีข้อความแจ้งเตือนสีแดง');
+    }
+    const payload = {
+      name: $('fName').value.trim(),
+      empId: $('fEmpId').value.trim(),
+      dept: pick('fDept', 'fDeptOther', OTHER),
+      phone: $('fPhone').value.trim(),
+      plate: normPlate($('fPlateNum').value),
+      province: $('fProvince').value,
+      brand: ($('fBrand').value === 'อื่นๆ (ระบุเอง)') ? $('fBrandOther').value.trim().toUpperCase() : $('fBrand').value,
+      model: ($('fBrand').value === 'อื่นๆ (ระบุเอง)' || $('fModel').value === 'อื่นๆ') ? $('fModelOther').value.trim() : $('fModel').value,
+      color: pick('fColor', 'fColorOther', OTHER),
+      photoBase64: state.photoBase64 || '', photoMime: state.photoMime || ''
+    };
+    const btn = $('btnSave'); state.busy = true;
+    btn.disabled = true; btn.classList.add('loading'); $('btnSaveTxt').textContent = 'กำลังส่งข้อมูล...';
+    try {
+      const res = await apiPost({ action: 'create', data: payload });
+      toast('ok', 'ลงทะเบียนสำเร็จ', `ทะเบียน ${payload.plate} ถูกบันทึกเรียบร้อยแล้ว`);
+      if (res && res.warning) toast('warn', 'มีข้อควรทราบ', res.warning, 7000);  // เช่น แนบรูปไม่สำเร็จ
+      showSuccess(payload);
+    } catch (err) {
+      const dup = /ลงทะเบียนไว้แล้ว|ซ้ำ/.test(err.message);
+      toast('err', dup ? 'ทะเบียนนี้มีในระบบแล้ว' : 'ส่งข้อมูลไม่สำเร็จ',
+            dup ? err.message : err.message + ' กรุณาลองใหม่อีกครั้ง', dup ? 9000 : 5500);
+      if (dup) setErr('fPlateNum', 'ePlate', 'ทะเบียนนี้ถูกลงทะเบียนไว้แล้ว');
+    } finally {
+      state.busy = false; btn.disabled = false; btn.classList.remove('loading');
+      $('btnSaveTxt').textContent = 'ส่งข้อมูลลงทะเบียน';
+    }
+  });
+}
+window.addEventListener('error', (e) => {
+  if (e && e.message && !/ResizeObserver|Script error/i.test(e.message)) {
+    try { toast('err', 'เกิดข้อผิดพลาดในระบบ', e.message.slice(0, 120), 6000); } catch (x) {}
+  }
+});
+window.addEventListener('unhandledrejection', (e) => {
+  const m = (e && e.reason && e.reason.message) ? e.reason.message : '';
+  if (m) { try { toast('err', 'การทำงานไม่สมบูรณ์', m.slice(0, 120), 6000); } catch (x) {} }
+});
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
