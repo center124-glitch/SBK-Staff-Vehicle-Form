@@ -6,7 +6,7 @@
 <title>ลงทะเบียนรถยนต์พนักงาน | Seacon Vehicle Register</title>
 
 <meta name="theme-color" content="#0F6B54">
-<meta name="description" content="แบบฟอร์มลงทะเบียนรถยนต์พนักงาน ศูนย์การค้าซีคอนสแควร์">
+<meta name="description" content="แบบฟอร์มลงทะเบียนรถยนต์พนักงาน ศูนย์การค้าซีคอนบางแค">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -101,26 +101,32 @@ h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.01em}
 #app.show{display:block;animation:fadeUp .55s both}
 .appbar{position:sticky;top:calc(8px + env(safe-area-inset-top));z-index:600;display:flex;align-items:center;gap:12px;padding:12px 15px;margin-bottom:16px;overflow:hidden;
   background:var(--header-bg);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);
-  backdrop-filter:blur(18px) saturate(170%);-webkit-backdrop-filter:blur(18px) saturate(170%)}
+  backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%)}
+/* เบราว์เซอร์ที่ไม่รองรับ backdrop-filter จะเห็นเนื้อหาทะลุหัวแอป จึงใช้พื้นทึบแทน */
+@supports not ((backdrop-filter: blur(2px)) or (-webkit-backdrop-filter: blur(2px))){
+  .appbar{background:color-mix(in srgb, var(--bg) 92%, var(--surface))}
+}
 .appbar::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;
   background:linear-gradient(90deg,var(--c2),var(--aqua),var(--accent),var(--coral),var(--lime))}
-.appbar .brand{display:flex;align-items:center;gap:11px;flex:1;min-width:0}
+.appbar .brand{display:flex;align-items:center;gap:11px;flex:1 1 auto;min-width:0;overflow:hidden}
+.appbar .brand > div{min-width:0;flex:1}
 .appbar svg{width:42px;height:42px;flex:none}
-.appbar h1{font-size:15.5px;line-height:1.3}
-.appbar p{margin:0;font-size:11.5px;color:var(--text-mute)}
+.appbar h1{font-size:15.5px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.appbar p{margin:0;font-size:11.5px;color:var(--text-mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.appbar .h-short{display:none}
 .icon-btn{width:42px;height:42px;flex:none;display:grid;place-items:center;cursor:pointer;border-radius:13px;
   border:1px solid var(--border);background:var(--surface-2);transition:transform .2s ease,border-color .25s ease,background .25s ease}
 .icon-btn:hover{transform:translateY(-2px);border-color:var(--c2);background:var(--input-bg)}
 .icon-btn:active{transform:scale(.94)}
 .icon-btn svg{width:20px;height:20px;stroke:var(--text);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
-.hero{padding:20px 22px;margin-bottom:16px;border-radius:var(--radius);color:#fff;position:relative;overflow:hidden;
+.hero{padding:20px 22px;margin-bottom:16px;scroll-margin-top:86px;border-radius:var(--radius);color:#fff;position:relative;overflow:hidden;
   background:linear-gradient(120deg,#2FD3A6 0%,var(--c2) 38%,#0C5843 72%,#0A4436 100%);
   background-size:220% 220%;animation:heroShift 14s ease-in-out infinite;box-shadow:var(--shadow-lg)}
 .hero::after{content:'';position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(420px 180px at 88% -20%, rgba(242,168,29,.42), transparent 70%)}
 .hero h2,.hero p{position:relative;z-index:1}
-.hero .tagline{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;padding:4px 12px;border-radius:99px;
+.hero .tagline{display:inline-flex;align-items:center;gap:6px;margin-bottom:9px;padding:4px 12px;border-radius:99px;
   font-size:11.5px;font-weight:700;letter-spacing:.4px;background:rgba(255,255,255,.2);
   border:1px solid rgba(255,255,255,.3);position:relative;z-index:1}
 @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
@@ -244,6 +250,25 @@ html[data-theme="dark"] .summary span:last-child{color:var(--c3)}
 @media (hover:none){ .btn:hover,.icon-btn:hover{transform:none} }  /* ปิด hover effect บนจอสัมผัส */
 @media (prefers-reduced-motion:reduce){ *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important} }
 @media (min-width:1200px){ #app{max-width:900px} }
+@media (max-width:768px){
+  /* จอสัมผัสมองผ่านพื้นโปร่งได้ชัดกว่าจอคอม จึงเพิ่มความทึบของหัวแอปเป็นพิเศษ */
+  .appbar{background:color-mix(in srgb, var(--bg) 86%, var(--surface));
+    top:calc(6px + env(safe-area-inset-top));padding:10px 12px}
+  .appbar svg{width:38px;height:38px}
+  .icon-btn{width:44px;height:44px}
+}
+@media (max-width:460px){
+  .appbar h1 .h-full{display:none}
+  .appbar h1 .h-short{display:inline}
+  .appbar h1{font-size:13.5px;font-weight:800}
+  .appbar svg{width:35px;height:35px}
+  .appbar{gap:9px}
+}
+@media (max-width:360px){
+  .appbar h1{font-size:12.5px}
+  .appbar svg{width:32px;height:32px}
+  .icon-btn{width:40px;height:40px}
+}
 @media (max-width:600px){
   #app{padding:10px}
   .form-grid{grid-template-columns:1fr}
@@ -260,7 +285,7 @@ html[data-theme="dark"] .summary span:last-child{color:var(--c3)}
   <div class="splash-glow"></div>
   <div class="splash-logo" id="splashLogo"></div>
   <div class="splash-title">ลงทะเบียนรถยนต์พนักงาน</div>
-  <div class="splash-sub">Seacon Vehicle Register · ศูนย์การค้าซีคอนสแควร์</div>
+  <div class="splash-sub">Seacon Vehicle Register · ศูนย์การค้าซีคอนบางแค</div>
   <div class="splash-bar"><i></i></div>
 </div>
 
@@ -276,7 +301,7 @@ html[data-theme="dark"] .summary span:last-child{color:var(--c3)}
     <div class="brand">
       <span id="headerLogo"></span>
       <div style="min-width:0">
-        <h1>แบบฟอร์มลงทะเบียนรถยนต์พนักงาน</h1>
+        <h1><span class="h-full">แบบฟอร์มลงทะเบียนรถยนต์พนักงาน</span><span class="h-short">ลงทะเบียนรถยนต์พนักงาน</span></h1>
         <p>Seacon Vehicle Register · สำหรับพนักงานศูนย์การค้า</p>
       </div>
     </div>
@@ -398,8 +423,8 @@ html[data-theme="dark"] .summary span:last-child{color:var(--c3)}
     <button class="btn btn-primary btn-block" id="btnAgain">ลงทะเบียนคันถัดไป</button>
   </section>
 
-  <p style="text-align:center;font-size:11.5px;color:var(--text-mute);margin-top:18px">
-    แผนกลานจอดรถและจราจร · ศูนย์การค้าซีคอนสแควร์ · ข้อมูลถูกจัดเก็บเพื่อการบริหารพื้นที่จอดรถเท่านั้น
+  <p class="app-foot" style="text-align:center;font-size:11.5px;color:var(--text-mute);margin:20px auto 4px;max-width:420px;line-height:1.7">
+    ศูนย์การค้าซีคอนบางแค · ข้อมูลถูกจัดเก็บเพื่อการบริหารพื้นที่จอดรถเท่านั้น
   </p>
 </div>
 
@@ -612,7 +637,7 @@ async function setupPWA() {
   if (i192) $('lnkAppleIcon').href = i192;
   const manifest = {
     name: 'ลงทะเบียนรถยนต์พนักงาน Seacon', short_name: 'ลงทะเบียนรถ',
-    description: 'แบบฟอร์มลงทะเบียนรถยนต์พนักงาน ศูนย์การค้าซีคอนสแควร์',
+    description: 'แบบฟอร์มลงทะเบียนรถยนต์พนักงาน ศูนย์การค้าซีคอนบางแค',
     start_url: location.href, scope: './', display: 'standalone', orientation: 'portrait-primary',
     background_color: '#0A4436', theme_color: '#0F6B54', lang: 'th',
     icons: [
